@@ -1,0 +1,339 @@
+{
+  "title": "U Feeder",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect U Feeder",
+        "description": "Use a dedicated U Feeder account for Home Assistant and share your devices with it from your main account. This lets the app stay signed in to your main account. Select the country used when registering the account.",
+        "data": {
+          "username": "Username (email)",
+          "password": "Password",
+          "region": "Account country"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Sign in again",
+        "description": "The cloud session has ended. A new login only happens when you submit this form. Use a dedicated U Feeder account for Home Assistant and share your devices with it from your main account. This lets the app stay signed in to your main account. Select the country used when registering the account.",
+        "data": {
+          "username": "Username (email)",
+          "password": "Password",
+          "region": "Account country"
+        }
+      },
+      "reconfigure": {
+        "title": "Change credentials",
+        "description": "Use a dedicated U Feeder account for Home Assistant and share your devices with it from your main account. This lets the app stay signed in to your main account. Select the country used when registering the account.",
+        "data": {
+          "username": "Username (email)",
+          "password": "Password",
+          "region": "Account country"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Login rejected. Check email, password and account country.",
+      "invalid_region": "This country is not supported by the U Feeder cloud.",
+      "cannot_connect": "Cannot connect to the U Feeder cloud.",
+      "cloud_error": "The cloud returned an unexpected response.",
+      "no_devices": "No feeders found. Accept the device-sharing invitation in the app with this account."
+    },
+    "abort": {
+      "already_configured": "This account is already configured.",
+      "wrong_account": "Use the same account. Add a new integration for another account.",
+      "reauth_successful": "Authentication renewed.",
+      "reconfigure_successful": "Credentials updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Choose feeder",
+        "data": {
+          "device": "Device"
+        }
+      },
+      "manage": {
+        "title": "{device}",
+        "menu_options": {
+          "feed_now": "Feed a compartment now",
+          "add_schedule": "Add feeding schedule",
+          "edit_schedule": "Edit / enable schedule",
+          "delete_schedule": "Delete schedule"
+        }
+      },
+      "feed_now": {
+        "title": "Feed now",
+        "description": "Submitting starts feeding from the selected compartment. If it times out, check the device before retrying.",
+        "data": {
+          "tray": "Compartment",
+          "duration_minutes": "Feeding duration",
+          "preheat": "Preheat",
+          "temperature": "Preheating temperature (°C)"
+        }
+      },
+      "choose_schedule": {
+        "title": "Choose schedule",
+        "description": "Weekdays: 1 = Monday through 7 = Sunday.",
+        "data": {
+          "schedule": "Feeding schedule"
+        }
+      },
+      "confirm_delete": {
+        "title": "Delete schedule",
+        "description": "Delete schedule #{schedule} from the feeder?"
+      },
+      "schedule": {
+        "title": "Feeding schedule",
+        "description": "Time in the Home Assistant timezone. Up to 10 plans, at least 60 minutes between enabled starts. The app stores fixed UTC times: local times may shift after daylight-saving changes. Preheating follows device settings. Automatic feeding must be enabled on the feeder.",
+        "data": {
+          "time": "Time",
+          "weekdays": "Weekdays",
+          "enabled": "Enabled",
+          "tray": "Compartment",
+          "duration_minutes": "Feeding duration"
+        }
+      }
+    },
+    "error": {
+      "command_failed": "Command failed or acknowledgement did not arrive. Check the feeder before retrying.",
+      "invalid_schedule": "Invalid schedule. Check weekdays, duration, compartment, maximum count (10) and spacing (60 minutes)."
+    },
+    "abort": {
+      "not_ready": "The integration is not ready.",
+      "tray_unknown": "Compartment count is unknown. Connect the feeder and refresh.",
+      "no_schedules": "No feeding schedules found.",
+      "schedule_changed": "The schedule changed. Please reopen the editor."
+    }
+  },
+  "selector": {
+    "weekdays": {
+      "options": {
+        "1": "Monday",
+        "2": "Tuesday",
+        "3": "Wednesday",
+        "4": "Thursday",
+        "5": "Friday",
+        "6": "Saturday",
+        "7": "Sunday"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "temperature": {
+        "name": "Temperature"
+      },
+      "tray_temperature": {
+        "name": "Tray temperature"
+      },
+      "thermoelectric_temperature": {
+        "name": "Thermoelectric temperature"
+      },
+      "global_state": {
+        "name": "Operating state",
+        "state": {
+          "resetting": "Resetting",
+          "idle": "Idle",
+          "pairing": "Pairing",
+          "feeding": "Feeding",
+          "updating": "Updating",
+          "testing": "Testing",
+          "erasing": "Erasing"
+        }
+      },
+      "feed_state": {
+        "name": "Feeding state",
+        "state": {
+          "stopped": "Stopped",
+          "preparing": "Preparing",
+          "starting": "Starting",
+          "serving": "Serving",
+          "stopping": "Stopping",
+          "fault": "Fault"
+        }
+      },
+      "door_state": {
+        "name": "Door state",
+        "state": {
+          "closed": "Closed",
+          "opening": "Opening",
+          "opened": "Open",
+          "closing": "Closing",
+          "fault": "Fault"
+        }
+      },
+      "tray_state": {
+        "name": "Tray state",
+        "state": {
+          "no_tray": "No tray",
+          "aligned": "Aligned",
+          "misaligned": "Misaligned",
+          "rotating": "Rotating",
+          "fault": "Fault"
+        }
+      },
+      "compartments": {
+        "name": "Compartments"
+      },
+      "feedable_compartment": {
+        "name": "Next feeding compartment"
+      },
+      "temperature_trend": {
+        "name": "Temperature trend",
+        "state": {
+          "stabilizing": "Stabilizing",
+          "cooling_down": "Cooling",
+          "heating_up": "Heating"
+        }
+      },
+      "temperature_fault": {
+        "name": "Temperature sensor fault",
+        "state": {
+          "none": "None",
+          "open_circuit": "Open circuit",
+          "short_circuit": "Short circuit"
+        }
+      },
+      "power_supply": {
+        "name": "Power supply",
+        "state": {
+          "battery": "Battery",
+          "dc": "Mains"
+        }
+      },
+      "battery": {
+        "name": "Battery"
+      },
+      "preheat_duration": {
+        "name": "Preheating duration"
+      },
+      "online": {
+        "name": "Online"
+      },
+      "feed_count_today": {
+        "name": "Feedings today"
+      },
+      "last_feeding": {
+        "name": "Last feeding"
+      },
+      "last_feeding_status": {
+        "name": "Last feeding result",
+        "state": {
+          "restart": "Restart",
+          "end": "Completed",
+          "interrupted": "Interrupted",
+          "fault": "Fault",
+          "power_supply_battery": "Battery power",
+          "preparing": "Preparing",
+          "starting": "Starting",
+          "door_open": "Door open",
+          "pet_detected": "Pet detected",
+          "tray_aligning": "Aligning tray",
+          "door_fault": "Door fault",
+          "tray_fault": "Tray fault",
+          "timeout": "Timed out",
+          "unknown": "Unknown"
+        }
+      },
+      "last_feeding_source": {
+        "name": "Last feeding trigger",
+        "state": {
+          "physical_button": "Device button",
+          "app_request": "App / Home Assistant",
+          "schedule": "Schedule",
+          "auto_feed": "Automatic",
+          "unknown": "Unknown"
+        }
+      }
+    },
+    "binary_sensor": {
+      "online": {
+        "name": "Online"
+      },
+      "pet_detected": {
+        "name": "Pet detected"
+      }
+    },
+    "switch": {
+      "pet_detection": {
+        "name": "Pet detection"
+      },
+      "temperature_control": {
+        "name": "Cooling enabled"
+      },
+      "auto_feeding": {
+        "name": "Automatic feeding"
+      },
+      "heat_before_feed_now": {
+        "name": "Preheat manual feeding"
+      },
+      "heat_before_feeding": {
+        "name": "Preheat scheduled feeding"
+      },
+      "automatic_update": {
+        "name": "Automatic firmware updates"
+      }
+    },
+    "select": {
+      "cooling_temperature": {
+        "name": "Cooling target (°C)"
+      },
+      "heating_temperature": {
+        "name": "Preheating target (°C)"
+      },
+      "feeding_duration": {
+        "name": "Feeding duration (minutes)"
+      }
+    },
+    "button": {
+      "feed_now": {
+        "name": "Feed now"
+      },
+      "stop_feeding": {
+        "name": "Stop feeding"
+      },
+      "skip_heating": {
+        "name": "Skip preheating"
+      },
+      "check_firmware": {
+        "name": "Check firmware"
+      },
+      "stop_firmware_download": {
+        "name": "Cancel firmware download"
+      }
+    },
+    "calendar": {
+      "feeding_schedule": {
+        "name": "Feeding schedule"
+      }
+    },
+    "update": {
+      "firmware": {
+        "name": "Firmware"
+      }
+    }
+  },
+  "services": {
+    "feed": {
+      "name": "Feed a compartment",
+      "description": "Start feeding from the selected compartment. If it times out, check the device before retrying.",
+      "fields": {
+        "device_id": {
+          "name": "Feeder"
+        },
+        "compartment": {
+          "name": "Compartment"
+        },
+        "duration_minutes": {
+          "name": "Feeding duration (minutes)"
+        },
+        "preheat": {
+          "name": "Preheat"
+        },
+        "temperature": {
+          "name": "Preheating temperature (°C)"
+        }
+      }
+    }
+  }
+}

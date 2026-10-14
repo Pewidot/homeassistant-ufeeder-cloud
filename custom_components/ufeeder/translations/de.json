@@ -1,0 +1,339 @@
+{
+  "title": "U Feeder",
+  "config": {
+    "step": {
+      "user": {
+        "title": "U Feeder anmelden",
+        "description": "Verwende ein eigenes U-Feeder-Konto für Home Assistant und teile die Geräte aus deinem Hauptkonto dorthin. So kann die App mit dem Hauptkonto angemeldet bleiben. Wähle dieselbe Region wie bei der Registrierung (z. B. Deutschland / DE).",
+        "data": {
+          "username": "Benutzername (E-Mail)",
+          "password": "Passwort",
+          "region": "Kontoregion"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Erneut anmelden",
+        "description": "Die Cloud-Sitzung wurde beendet. Eine erneute Anmeldung erfolgt nur auf deine Bestätigung. Verwende ein eigenes U-Feeder-Konto für Home Assistant und teile die Geräte aus deinem Hauptkonto dorthin. So kann die App mit dem Hauptkonto angemeldet bleiben. Wähle dieselbe Region wie bei der Registrierung (z. B. Deutschland / DE).",
+        "data": {
+          "username": "Benutzername (E-Mail)",
+          "password": "Passwort",
+          "region": "Kontoregion"
+        }
+      },
+      "reconfigure": {
+        "title": "Zugangsdaten ändern",
+        "description": "Verwende ein eigenes U-Feeder-Konto für Home Assistant und teile die Geräte aus deinem Hauptkonto dorthin. So kann die App mit dem Hauptkonto angemeldet bleiben. Wähle dieselbe Region wie bei der Registrierung (z. B. Deutschland / DE).",
+        "data": {
+          "username": "Benutzername (E-Mail)",
+          "password": "Passwort",
+          "region": "Kontoregion"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Anmeldung abgewiesen. Prüfe E-Mail, Passwort und Kontoregion.",
+      "invalid_region": "Diese Region wird von der U-Feeder-Cloud nicht unterstützt.",
+      "cannot_connect": "Die U-Feeder-Cloud ist nicht erreichbar.",
+      "cloud_error": "Die Cloud hat eine unerwartete Antwort gesendet.",
+      "no_devices": "Keine Feeder gefunden. Nimm die Gerätefreigabe in der App mit diesem Konto an."
+    },
+    "abort": {
+      "already_configured": "Dieses Konto ist bereits eingerichtet.",
+      "wrong_account": "Bitte verwende dasselbe Konto. Für ein anderes Konto eine neue Integration hinzufügen.",
+      "reauth_successful": "Anmeldung erneuert.",
+      "reconfigure_successful": "Zugangsdaten aktualisiert."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Feeder auswählen",
+        "data": {
+          "device": "Gerät"
+        }
+      },
+      "manage": {
+        "title": "{device}",
+        "menu_options": {
+          "feed_now": "Fach jetzt füttern",
+          "add_schedule": "Fütterung planen",
+          "edit_schedule": "Plan bearbeiten / aktivieren",
+          "delete_schedule": "Plan löschen"
+        }
+      },
+      "feed_now": {
+        "title": "Jetzt füttern",
+        "description": "Absenden startet die Fütterung am gewählten Fach. Bei einem Timeout bitte erst den Gerätezustand prüfen.",
+        "data": {
+          "tray": "Fach",
+          "duration_minutes": "Fütterungsdauer",
+          "preheat": "Vorheizen",
+          "temperature": "Vorheiztemperatur (°C)"
+        }
+      },
+      "choose_schedule": {
+        "title": "Plan auswählen",
+        "description": "Wochentage: 1 = Montag bis 7 = Sonntag.",
+        "data": {
+          "schedule": "Fütterungsplan"
+        }
+      },
+      "confirm_delete": {
+        "title": "Plan löschen",
+        "description": "Plan #{schedule} vom Feeder löschen?"
+      },
+      "schedule": {
+        "title": "Fütterungsplan",
+        "description": "Uhrzeit in der Home-Assistant-Zeitzone. Bis zu 10 Pläne; mindestens 60 Minuten Abstand zwischen aktiven Starts. Die App speichert feste UTC-Zeiten: Nach einer Zeitumstellung können sich lokale Zeiten verschieben. Vorheizen folgt den Geräteeinstellungen. Die automatische Fütterung muss am Gerät eingeschaltet sein.",
+        "data": {
+          "time": "Uhrzeit",
+          "weekdays": "Wochentage",
+          "enabled": "Plan aktiv",
+          "tray": "Fach",
+          "duration_minutes": "Fütterungsdauer"
+        }
+      }
+    },
+    "error": {
+      "command_failed": "Befehl fehlgeschlagen oder Bestätigung ausgeblieben. Prüfe den Feeder vor einem erneuten Versuch.",
+      "invalid_schedule": "Ungültiger Plan. Prüfe Wochentage, Dauer, Fach, maximale Anzahl (10) und Abstand (60 Minuten)."
+    },
+    "abort": {
+      "not_ready": "Integration noch nicht verbunden.",
+      "tray_unknown": "Fächerzahl unbekannt. Verbinde den Feeder und aktualisiere die Daten.",
+      "no_schedules": "Keine Fütterungspläne vorhanden.",
+      "schedule_changed": "Plan wurde zwischenzeitlich geändert. Bitte erneut öffnen."
+    }
+  },
+  "selector": {
+    "weekdays": {
+      "options": {
+        "1": "Montag",
+        "2": "Dienstag",
+        "3": "Mittwoch",
+        "4": "Donnerstag",
+        "5": "Freitag",
+        "6": "Samstag",
+        "7": "Sonntag"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "temperature": {
+        "name": "Temperatur"
+      },
+      "tray_temperature": {
+        "name": "Schalentemperatur"
+      },
+      "thermoelectric_temperature": {
+        "name": "Temperatur des Kühlelements"
+      },
+      "global_state": {
+        "name": "Betriebszustand",
+        "state": {
+          "resetting": "Wird zurückgesetzt",
+          "idle": "Bereit",
+          "pairing": "Kopplung",
+          "feeding": "Fütterung",
+          "updating": "Aktualisierung",
+          "testing": "Test",
+          "erasing": "Wird gelöscht"
+        }
+      },
+      "feed_state": {
+        "name": "Fütterungszustand",
+        "state": {
+          "stopped": "Beendet",
+          "preparing": "Vorbereitung",
+          "starting": "Startet",
+          "serving": "Futterzugang offen",
+          "stopping": "Wird beendet",
+          "fault": "Fehler"
+        }
+      },
+      "door_state": {
+        "name": "Klappenstatus",
+        "state": {
+          "closed": "Geschlossen",
+          "opening": "Öffnet",
+          "opened": "Offen",
+          "closing": "Schließt",
+          "fault": "Fehler"
+        }
+      },
+      "tray_state": {
+        "name": "Schalenstatus",
+        "state": {
+          "no_tray": "Keine Schale",
+          "aligned": "Ausgerichtet",
+          "misaligned": "Nicht ausgerichtet",
+          "rotating": "Dreht",
+          "fault": "Fehler"
+        }
+      },
+      "compartments": {
+        "name": "Fächer"
+      },
+      "feedable_compartment": {
+        "name": "Nächstes Futterfach"
+      },
+      "temperature_trend": {
+        "name": "Temperaturverlauf",
+        "state": {
+          "stabilizing": "Stabilisiert sich",
+          "cooling_down": "Kühlt",
+          "heating_up": "Heizt"
+        }
+      },
+      "temperature_fault": {
+        "name": "Temperatursensorfehler",
+        "state": {
+          "none": "Keiner",
+          "open_circuit": "Unterbrechung",
+          "short_circuit": "Kurzschluss"
+        }
+      },
+      "power_supply": {
+        "name": "Stromversorgung",
+        "state": {
+          "battery": "Batterie",
+          "dc": "Netzteil"
+        }
+      },
+      "battery": {
+        "name": "Batterie"
+      },
+      "preheat_duration": {
+        "name": "Vorheizdauer"
+      },
+      "online": {
+        "name": "Online"
+      },
+      "feed_count_today": {
+        "name": "Fütterungen heute"
+      },
+      "last_feeding": {
+        "name": "Letzte Fütterung"
+      },
+      "last_feeding_status": {
+        "name": "Ergebnis der letzten Fütterung",
+        "state": {
+          "restart": "Neustart",
+          "end": "Beendet",
+          "interrupted": "Unterbrochen",
+          "fault": "Fehler",
+          "power_supply_battery": "Batteriebetrieb",
+          "preparing": "Vorbereitung",
+          "starting": "Startet",
+          "door_open": "Klappe offen",
+          "pet_detected": "Tier erkannt",
+          "tray_aligning": "Schale wird ausgerichtet",
+          "door_fault": "Klappenfehler",
+          "tray_fault": "Schalenfehler",
+          "timeout": "Zeitüberschreitung",
+          "unknown": "Unbekannt"
+        }
+      },
+      "last_feeding_source": {
+        "name": "Auslöser der letzten Fütterung",
+        "state": {
+          "physical_button": "Gerätetaste",
+          "app_request": "App / Home Assistant",
+          "schedule": "Fütterungsplan",
+          "auto_feed": "Automatisch",
+          "unknown": "Unbekannt"
+        }
+      }
+    },
+    "binary_sensor": {
+      "online": {
+        "name": "Online"
+      },
+      "pet_detected": {
+        "name": "Tier erkannt"
+      }
+    },
+    "switch": {
+      "pet_detection": {
+        "name": "Tiererkennung"
+      },
+      "temperature_control": {
+        "name": "Kühlung"
+      },
+      "auto_feeding": {
+        "name": "Automatische Fütterung"
+      },
+      "heat_before_feed_now": {
+        "name": "Vorheizen bei Sofortfütterung"
+      },
+      "heat_before_feeding": {
+        "name": "Vorheizen bei geplanter Fütterung"
+      },
+      "automatic_update": {
+        "name": "Automatische Firmware-Updates"
+      }
+    },
+    "select": {
+      "cooling_temperature": {
+        "name": "Kühltemperatur (°C)"
+      },
+      "heating_temperature": {
+        "name": "Vorheiztemperatur (°C)"
+      },
+      "feeding_duration": {
+        "name": "Fütterungsdauer (Minuten)"
+      }
+    },
+    "button": {
+      "feed_now": {
+        "name": "Jetzt füttern"
+      },
+      "stop_feeding": {
+        "name": "Fütterung beenden"
+      },
+      "skip_heating": {
+        "name": "Vorheizen überspringen"
+      },
+      "check_firmware": {
+        "name": "Nach Firmware suchen"
+      },
+      "stop_firmware_download": {
+        "name": "Firmware-Download abbrechen"
+      }
+    },
+    "calendar": {
+      "feeding_schedule": {
+        "name": "Fütterungsplan"
+      }
+    },
+    "update": {
+      "firmware": {
+        "name": "Firmware"
+      }
+    }
+  },
+  "services": {
+    "feed": {
+      "name": "Fach füttern",
+      "description": "Startet eine Fütterung aus dem gewählten Fach. Bei einem Timeout zuerst den Gerätezustand prüfen.",
+      "fields": {
+        "device_id": {
+          "name": "Feeder"
+        },
+        "compartment": {
+          "name": "Fach"
+        },
+        "duration_minutes": {
+          "name": "Fütterungsdauer (Minuten)"
+        },
+        "preheat": {
+          "name": "Vorheizen"
+        },
+        "temperature": {
+          "name": "Vorheiztemperatur (°C)"
+        }
+      }
+    }
+  }
+}

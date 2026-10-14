@@ -1,0 +1,45 @@
+feed:
+  name: Feed a compartment
+  description: Start one feeding operation. A timeout never triggers an automatic retry.
+  fields:
+    device_id:
+      name: Feeder
+      required: true
+      selector:
+        device:
+          integration: ufeeder
+    compartment:
+      name: Compartment
+      description: One-based compartment number; must exist in the inserted tray.
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 4
+          step: 1
+          mode: box
+    duration_minutes:
+      name: Feeding duration
+      description: 3–30 whole minutes or 1–12 whole hours (60, 120, …, 720 minutes).
+      default: 3
+      selector:
+        number:
+          min: 3
+          max: 720
+          step: 1
+          unit_of_measurement: min
+          mode: box
+    preheat:
+      name: Preheat
+      default: false
+      selector:
+        boolean:
+    temperature:
+      name: Preheating temperature
+      default: 24
+      selector:
+        select:
+          options:
+            - "20"
+            - "24"
+            - "28"
