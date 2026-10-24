@@ -16,20 +16,16 @@ PROPERTY_PATHS = {
     "cooling_temperature": (10, 11, 12),
     "auto_feeding": (10, 11, 17),
     "heat_before_feed_now": (10, 11, 22),
-    "automatic_update": (10, 10, 5),
 }
 COMMAND_PATHS = {
     "feed_now": (10, 11, 2),
     "skip_heating": (10, 11, 3),
     "stop_feeding": (10, 11, 4),
     "detect_firmware_update": (10, 10, 1),
-    "start_firmware_download": (10, 10, 2),
-    "stop_firmware_download": (10, 10, 3),
 }
 COOLING_TEMPERATURES = (14, 17, 20)
 HEATING_TEMPERATURES = (20, 24, 28)
 DURATION_MINUTES = (*range(3, 31), *range(60, 721, 60))
-STOP_FIRMWARE_DOWNLOAD_ARGUMENT = b"\x08\x01"
 
 _BOOL_PROPERTIES = frozenset(
     path
@@ -187,16 +183,3 @@ def encode_preferences(
     _boolean(heat, "heatBeforeFeeding")
     _integer(temperature, "expectedHeatingTemperature", -(1 << 31), (1 << 31) - 1)
     return _field(1, duration) + _field(2, heat) + _field(3, temperature)
-
-
-def encode_firmware_version(name: str, code: int) -> bytes:
-    """Encode a device/cloud-reported FirmwareVersion for start-download.
-
-    Do not synthesize code from a version name or supply an arbitrary version.
-    The app first invokes firmware detection and awaits the detected version.
-    """
-    if not isinstance(name, str) or not name or len(name.encode("utf-8")) > 1024:
-        raise ValueError("Firmware version name must be a nonempty string")
-    _integer(code, "code", 0, 0xFFFFFFFF)
-    value = name.encode("utf-8")
-    return b"\x0a" + _varint(len(value)) + value + _field(2, code)

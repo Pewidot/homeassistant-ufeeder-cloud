@@ -3,7 +3,6 @@
 from dataclasses import dataclass
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
-from homeassistant.helpers.entity import EntityCategory
 
 from .controls import encode_scalar_property
 from .entity import UFeederEntity, setup_entities
@@ -46,13 +45,6 @@ SWITCHES = (
         path="10:11:7",
         preference="heatBeforeFeeding",
         icon="mdi:heat-wave",
-    ),
-    FeederSwitchDescription(
-        key="automatic_update",
-        translation_key="automatic_update",
-        path="10:10:5",
-        icon="mdi:update",
-        entity_category=EntityCategory.CONFIG,
     ),
 )
 

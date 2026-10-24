@@ -269,9 +269,6 @@
       },
       "heat_before_feeding": {
         "name": "Preheat scheduled feeding"
-      },
-      "automatic_update": {
-        "name": "Automatic firmware updates"
       }
     },
     "select": {
@@ -297,9 +294,6 @@
       },
       "check_firmware": {
         "name": "Check firmware"
-      },
-      "stop_firmware_download": {
-        "name": "Cancel firmware download"
       }
     },
     "calendar": {

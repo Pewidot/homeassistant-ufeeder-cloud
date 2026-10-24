@@ -269,9 +269,6 @@
       },
       "heat_before_feeding": {
         "name": "Vorheizen bei geplanter Fütterung"
-      },
-      "automatic_update": {
-        "name": "Automatische Firmware-Updates"
       }
     },
     "select": {
@@ -297,9 +294,6 @@
       },
       "check_firmware": {
         "name": "Nach Firmware suchen"
-      },
-      "stop_firmware_download": {
-        "name": "Firmware-Download abbrechen"
       }
     },
     "calendar": {

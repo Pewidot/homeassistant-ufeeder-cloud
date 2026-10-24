@@ -34,6 +34,7 @@ class ControlCodecTests(unittest.TestCase):
         self.assertEqual(controls.encode_scalar_property((10, 11, 12), 14), b"\x08\x0e")
         for path, value in (
             ((10, 11, 9), True),
+            ((10, 10, 5), True),
             ((10, 13, 2), "secret"),
             ((10, 11, 8), 1),
             ((10, 11, 8), "false"),
@@ -111,15 +112,6 @@ class ControlCodecTests(unittest.TestCase):
         for value in (False, 2, 31, 45, 90, 721, 10.0):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 controls.validate_duration_minutes(value)
-
-    def test_firmware_argument_schema(self):
-        self.assertEqual(
-            controls.encode_firmware_version("1.2.3", 42),
-            bytes.fromhex("0a05312e322e33102a"),
-        )
-        self.assertEqual(controls.STOP_FIRMWARE_DOWNLOAD_ARGUMENT, b"\x08\x01")
-        with self.assertRaises(ValueError):
-            controls.encode_firmware_version("1.2.3", "42")
 
 
 if __name__ == "__main__":

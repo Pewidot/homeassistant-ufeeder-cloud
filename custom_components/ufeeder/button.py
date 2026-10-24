@@ -3,11 +3,7 @@
 from homeassistant.components.button import ButtonEntity, ButtonEntityDescription
 from homeassistant.exceptions import ServiceValidationError
 
-from .controls import (
-    COMMAND_PATHS,
-    STOP_FIRMWARE_DOWNLOAD_ARGUMENT,
-    encode_feed_options,
-)
+from .controls import COMMAND_PATHS, encode_feed_options
 from .entity import UFeederEntity, setup_entities
 
 
@@ -27,11 +23,6 @@ DESCRIPTIONS = (
     ),
     ButtonEntityDescription(
         key="check_firmware", translation_key="check_firmware", icon="mdi:update"
-    ),
-    ButtonEntityDescription(
-        key="stop_firmware_download",
-        translation_key="stop_firmware_download",
-        icon="mdi:download-off",
     ),
 )
 
@@ -71,12 +62,6 @@ class UFeederButton(UFeederEntity, ButtonEntity):
         elif key == "check_firmware":
             await self.coordinator.async_invoke(
                 self.device_key, COMMAND_PATHS["detect_firmware_update"]
-            )
-        elif key == "stop_firmware_download":
-            await self.coordinator.async_invoke(
-                self.device_key,
-                COMMAND_PATHS["stop_firmware_download"],
-                STOP_FIRMWARE_DOWNLOAD_ARGUMENT,
             )
         else:
             await self.coordinator.async_invoke(self.device_key, COMMAND_PATHS[key])

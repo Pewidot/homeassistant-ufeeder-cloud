@@ -11,6 +11,7 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 from homeassistant.components.calendar.const import DATA_COMPONENT as CALENDAR_COMPONENT
+from homeassistant.components.update import UpdateEntityFeature
 from homeassistant.config_entries import SOURCE_REAUTH, SOURCE_USER, ConfigEntryState
 from homeassistant.const import CONF_PASSWORD, CONF_USERNAME, STATE_UNAVAILABLE
 from homeassistant.data_entry_flow import FlowResultType
@@ -85,6 +86,7 @@ def devices():
         "10:11:22": False,
         "10:11:23": 30,
         "10:10:1": {"name": "test-firmware", "code": 1},
+        "10:10:2": {"name": "test-firmware", "code": 2},
         "10:10:5": False,
         "10:10:7": 1,
         "10:10:8": 95,
@@ -278,13 +280,13 @@ async def test_setup_availability_mqtt_disconnect_and_unload(
     expected_counts = {
         "binary_sensor": 2,
         "sensor": 18,
-        "switch": 6,
+        "switch": 5,
         "select": 3,
-        "button": 5,
+        "button": 4,
         "calendar": 1,
         "update": 1,
     }
-    assert len(entries) == 72
+    assert len(entries) == 68
     for device in devices:
         device_entries = [
             entry
@@ -318,6 +320,28 @@ async def test_setup_availability_mqtt_disconnect_and_unload(
     restored = hass.states.get(temperature)
     assert restored.state == STATE_UNAVAILABLE
     assert restored.attributes["restored"] is True
+
+
+@pytest.mark.parametrize("options", [{}, {"version": "vtest-firmware.2"}])
+async def test_firmware_install_service_is_unsupported(
+    hass, loaded_entry, devices, transport, options
+):
+    firmware = entity_id(hass, devices[0], "update", "firmware")
+    state = hass.states.get(firmware)
+    assert state.state == "on"
+    assert state.attributes["supported_features"] == UpdateEntityFeature.PROGRESS
+    assert not any(
+        entry.unique_id.endswith((":automatic_update", ":stop_firmware_download"))
+        for entry in er.async_entries_for_config_entry(
+            er.async_get(hass), loaded_entry.entry_id
+        )
+    )
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            "update", "install", {"entity_id": firmware, **options}, blocking=True
+        )
+    transport.async_invoke.assert_not_awaited()
+    transport.async_write.assert_not_awaited()
 
 
 async def open_options(hass, entry, device, action):

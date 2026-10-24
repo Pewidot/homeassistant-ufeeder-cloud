@@ -1,8 +1,7 @@
-"""Explicit firmware checks and downloads using the device's reported version."""
+"""Firmware checks and status reported by the device."""
 
 from __future__ import annotations
 
-import asyncio
 from collections.abc import Mapping
 import re
 
@@ -12,9 +11,8 @@ from homeassistant.components.update import (
     UpdateEntityDescription,
     UpdateEntityFeature,
 )
-from homeassistant.exceptions import ServiceValidationError
 
-from .controls import COMMAND_PATHS, encode_firmware_version
+from .controls import COMMAND_PATHS
 from .entity import UFeederEntity, setup_entities
 
 DESCRIPTION = UpdateEntityDescription(
@@ -37,9 +35,17 @@ def _version(value) -> tuple[str, int] | None:
     if not isinstance(value, Mapping):
         return None
     name, code = value.get("name", value.get("1")), value.get("code", value.get("2", 0))
+    if (
+        not isinstance(name, str)
+        or not name
+        or type(code) is not int
+        or not 0 <= code <= 0xFFFFFFFF
+    ):
+        return None
     try:
-        encode_firmware_version(name, code)
-    except (ValueError, TypeError):
+        if len(name.encode("utf-8")) > 1024:
+            return None
+    except UnicodeEncodeError:
         return None
     return name, code
 
@@ -67,20 +73,12 @@ async def async_setup_entry(hass, entry, async_add_entities):
 
 
 class UFeederUpdate(UFeederEntity, UpdateEntity):
-    """The app's download command initiates its firmware-update flow.
+    """Report firmware availability and progress; installation uses the app."""
 
-    There is no separately recovered install/reboot command. Completion and
-    percentage come only from device reports. No operation is replayed.
-    """
-
-    control = True
-    _attr_supported_features = (
-        UpdateEntityFeature.INSTALL | UpdateEntityFeature.PROGRESS
-    )
+    _attr_supported_features = UpdateEntityFeature.PROGRESS
 
     def __init__(self, coordinator, device_key):
         super().__init__(coordinator, device_key, DESCRIPTION)
-        self._install_lock = asyncio.Lock()
 
     @property
     def installed_version(self):
@@ -125,41 +123,4 @@ class UFeederUpdate(UFeederEntity, UpdateEntity):
         if self.enabled:
             await self.coordinator.async_invoke(
                 self.device_key, COMMAND_PATHS["detect_firmware_update"]
-            )
-
-    async def async_install(self, version: str | None, backup: bool, **kwargs):
-        if backup:
-            raise ServiceValidationError(
-                "The feeder does not expose a firmware backup operation"
-            )
-        if self._install_lock.locked() or self.in_progress:
-            raise ServiceValidationError("A firmware update is already in progress")
-        target = _version(self.value("10:10:2"))
-        if target is None:
-            raise ServiceValidationError("Check for firmware updates before installing")
-        if version is not None and version != _label(target):
-            raise ServiceValidationError(
-                "Only the firmware detected by this feeder can be installed"
-            )
-        async with self._install_lock:
-            # A fresh read avoids using an old detected version from HA's cache.
-            # The mobile app also skips detection when the target already matches.
-            await self.coordinator.async_request_refresh()
-            if not self.coordinator.last_update_success:
-                raise ServiceValidationError(
-                    "Could not refresh the feeder's firmware state"
-                )
-            if _version(self.value("10:10:2")) != target:
-                raise ServiceValidationError(
-                    "Detected firmware changed; review the new version first"
-                )
-            current = _version(self.value("10:10:1"))
-            if current is None or _version_key(target) <= _version_key(current):
-                raise ServiceValidationError("No newer detected firmware is available")
-            if self.in_progress:
-                raise ServiceValidationError("A firmware update is already in progress")
-            await self.coordinator.async_invoke(
-                self.device_key,
-                COMMAND_PATHS["start_firmware_download"],
-                encode_firmware_version(*target),
             )

@@ -9,7 +9,7 @@ Unofficial Home Assistant integration for UBTECH U Feeder. Requires the U Feeder
 - Manage weekly feeding schedules and view upcoming meals in a calendar.
 - Control cooling, preheating, temperatures and pet detection.
 - View live status, temperatures, battery and feeding history.
-- Check and install firmware updates.
+- Check for firmware updates and view their status. Install updates through the U-Feeder app.
 
 ## Use a separate account
 
@@ -62,4 +62,4 @@ The feeder's built-in schedules repeat weekly. For a single date, use a Home Ass
 
 Home Assistant and the feeder must be online at that time. This does not create a weekly plan on the feeder.
 
-Firmware installation and physical feeding commands have not yet been hardware-tested.
+Physical feeding has been tested on a real feeder. Firmware installation is not supported in Home Assistant.

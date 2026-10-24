@@ -8,5 +8,5 @@
   "iot_class": "cloud_push",
   "issue_tracker": "https://github.com/Pewidot/homeassistant-ufeeder-cloud/issues",
   "requirements": ["aiomqtt==2.5.1"],
-  "version": "0.1.0"
+  "version": "0.1.1"
 }
