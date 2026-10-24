@@ -61,5 +61,3 @@ The feeder's built-in schedules repeat weekly. For a single date, use a Home Ass
 3. Add the action **U Feeder: Feed a compartment** (`ufeeder.feed`). Select the feeder, compartment, duration and optional preheating.
 
 Home Assistant and the feeder must be online at that time. This does not create a weekly plan on the feeder.
-
-Physical feeding has been tested on a real feeder. Firmware installation is not supported in Home Assistant.
